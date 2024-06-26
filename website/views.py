@@ -3,6 +3,19 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UserRegistrationForm
 from .models import User, ParkingSession
+from .models import Profile, Vehicle
+
+from rest_framework import viewsets
+from .models import Profile, Vehicle
+from .serializers import ProfileSerializer, VehicleSerializer
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+class VehicleViewSet(viewsets.ModelViewSet):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer                                                                
 
 def register_user(request):
     print("Inside register_user view")

@@ -1,13 +1,28 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
-class User(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    cellphone_number = models.CharField(max_length=15)
+    city = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10)
+    dob = models.DateField()
+    private_profile = models.BooleanField(default=False)
     license_plate_number = models.CharField(max_length=15, unique=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.license_plate_number}"
+        return f"{self.full_name} - {self.license_plate_number}"
+
+class Vehicle(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    reg_number = models.CharField(max_length=10)
+    car_make = models.CharField(max_length=50)
+    car_model = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.reg_number} - {self.car_make} {self.car_model}"
 
 class ParkingSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -30,4 +45,4 @@ class ParkingSession(models.Model):
         return round(hours * 5, 2)
 
     def __str__(self):
-        return f"Session for {self.user.license_plate_number} started at {self.start_time}"
+        return f"Session for {self.user.profile.license_plate_number} started at {self.start_time}"
